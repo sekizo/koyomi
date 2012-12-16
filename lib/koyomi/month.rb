@@ -1,6 +1,5 @@
 # encoding: utf-8
 
-require "date"
 require "koyomi/period"
 
 class Koyomi::Month < Koyomi::Period
@@ -28,7 +27,6 @@ class Koyomi::Month < Koyomi::Period
   # @param  [Integer] year  optional, default use the year of instance created.
   def initialize(month = nil, year = nil)
     super()
-    self.created_at = Date.today
     self.range = self.initialize_range(month, year) 
   end
   
@@ -49,7 +47,6 @@ class Koyomi::Month < Koyomi::Period
   #--------------------#
   protected
   
-  attr_accessor :created_at
   attr_writer :year, :month
   attr_writer :first, :last
   
