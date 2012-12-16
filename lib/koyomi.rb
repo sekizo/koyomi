@@ -8,5 +8,4 @@ require "koyomi/month"
 require "koyomi/calendar"
 
 module Koyomi
-  # Your code goes here...
 end
