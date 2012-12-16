@@ -7,11 +7,21 @@ class Koyomi::Calendar < Koyomi::Period
   #--------------------#
   # constant
   DEFAULT_WEEK_START = :mon
+  WEEK_DAYS = 7
   WEEK_START_RANGE = (0..6)
   WEEK_START_STRING = [:sun, :mon, :tue, :wed, :thu, :fri, :sat]
   
   #--------------------#
   # class methods
+  
+  # create Koyomi::Calendar instance from date.
+  #
+  # @param  [Date]  date
+  # @param  [Object]  week_start
+  # @return [Koyomi::Calendar]
+  def self.of(date, week_start = nil)
+    self.new(date.year, date.month, week_start)
+  end
   
   # week index
   #
@@ -112,7 +122,7 @@ class Koyomi::Calendar < Koyomi::Period
   def week_starts(date, week_start = nil)
     week_start ||= self.week_start
     diff = date.wday - self.class.windex(week_start)
-    date - diff - (diff < 0 ? 7 : 0)
+    date - diff - (diff < 0 ? WEEK_DAYS : 0)
   end
   
   # week end date
@@ -121,6 +131,6 @@ class Koyomi::Calendar < Koyomi::Period
   # @param  [Object]  week_start
   # @return [Date]
   def week_ends(date, week_start = nil)
-    week_starts(date, week_start) + 6
+    week_starts(date, week_start) + WEEK_DAYS - 1
   end
 end
