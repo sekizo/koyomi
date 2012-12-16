@@ -51,12 +51,12 @@ class Koyomi::Calendar < Koyomi::Period
   #
   # @param  [Integer] year optional, use instance create date.
   # @param  [Integer] month optional, use instance create date.
-  # @param  [Object] week_start weekday which week starts with. optional, use 1 (Monday).
+  # @param  [Object] week_start weekday which week starts with. optional, use DEFAULT_WEEK_START.
   def initialize(year = nil, month = nil, week_start = nil)
     super()
     self.year = year||self.created_at.year
     self.month = month||self.created_at.month
-    self.week_start = week_start||self.class::DEFAULT_WEEK_START
+    self.week_start = week_start||DEFAULT_WEEK_START
     
     self.koyomi_month = Koyomi::Month.new(self.month, self.year)
   end
@@ -104,14 +104,22 @@ class Koyomi::Calendar < Koyomi::Period
   #--------------------#
   private
   
+  # week start date
+  #
+  # @param  [Date]  date
+  # @param  [Object]  week_start
+  # @return [Date]
   def week_starts(date, week_start = nil)
     week_start ||= self.week_start
-    diff = date.wday - week_start
-    sd = date - diff
-    sd -= diff < 0 ? 7 : 0
-    sd
+    diff = date.wday - self.class.windex(week_start)
+    date - diff - (diff < 0 ? 7 : 0)
   end
   
+  # week end date
+  #
+  # @param  [Date]  date
+  # @param  [Object]  week_start
+  # @return [Date]
   def week_ends(date, week_start = nil)
     week_starts(date, week_start) + 6
   end
