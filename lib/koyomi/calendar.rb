@@ -6,69 +6,106 @@ require "koyomi/month"
 class Koyomi::Calendar < Koyomi::Period
   #--------------------#
   # constant
-  DEFAULT_WEEK_START = 0
+  DEFAULT_WEEK_START = :mon
   WEEK_START_RANGE = (0..6)
   WEEK_START_STRING = [:sun, :mon, :tue, :wed, :thu, :fri, :sat]
   
   #--------------------#
-  # instance methods
-  attr_reader :year, :month, :koyomi_month
-  attr_reader :first, :last
-  attr_accessor :week_start
+  # class methods
   
-  def initialize(year = nil, month = nil, week_start = nil)
-    super()
-    self.range = self.initialize_range(year, month, week_start)
-  end
-  
-  def week_start=(value)
+  # week index
+  #
+  # @param  [Object]  value
+  # @return [Integer]
+  def self.windex(value)
     case value
     when Numeric
-      klass = :numeric
+      index = value
+    when Date
+      index = value.wday
     when String, Symbol
-      klass = :string
+      value = value.to_s.downcase[0, 3].to_sym
+      raise "Range invalid, required #{WEEK_START_STRING}." unless WEEK_START_STRING.include?(value)
+      index = WEEK_START_STRING.index(value)
     else
-      klass = value.class.name
+      index = value.to_s.to_i
     end
+    raise "Range overflow, required (#{WEEK_START_RANGE})." unless WEEK_START_RANGE.cover?(index)
+    index
+  end
+  
+  # week label
+  #
+  # @param  [Object]  value
+  # @return [Symbol]
+  def self.wlabel(value)
+    WEEK_START_STRING.at(self.windex(value))
+  end
+  
+  #--------------------#
+  # instance methods
+  attr_reader :year, :month, :koyomi_month
+  attr_accessor :week_start
+  
+  # initialize instance
+  #
+  # @param  [Integer] year optional, use instance create date.
+  # @param  [Integer] month optional, use instance create date.
+  # @param  [Object] week_start weekday which week starts with. optional, use 1 (Monday).
+  def initialize(year = nil, month = nil, week_start = nil)
+    super()
+    self.year = year||self.created_at.year
+    self.month = month||self.created_at.month
+    self.week_start = week_start||self.class::DEFAULT_WEEK_START
     
-    m = "week_start_as_#{klass.to_s.downcase}"
-    @week_start = self.__send__(m, value)
+    self.koyomi_month = Koyomi::Month.new(self.month, self.year)
+  end
+  
+  # set week_start
+  #
+  # @param  [Object]  value
+  def week_start=(value)
+    @week_start = self.class.windex(value)
+  end
+  
+  # first date of the calendar (NOT first date of the MONTH)
+  #
+  # @return [Date]
+  def first
+    week_starts(self.koyomi_month.first, self.week_start)
+  end
+  
+  # last date of the calendar (NOT last date of the MONTH)
+  #
+  # @return [Date]
+  def last
+    week_ends(self.koyomi_month.last, self.week_start)
+  end
+  
+  # range of the calendar.
+  #
+  # @return [Range]
+  def range
+    Range.new(self.first, self.last)
+  end
+  
+  # Koyomi::Month of the calendar's month.
+  #
+  # @return [Koyomi::Month]
+  def the_month
+    self.koyomi_month
   end
   
   #--------------------#
   protected
   
   attr_writer :year, :month, :koyomi_month
-  attr_writer :first, :last
-  
-  def initialize_range(year = nil, month = nil, week_start = nil)
-    self.year = year||self.created_at.year
-    self.month = month||self.created_at.month
-    self.koyomi_month = Koyomi::Month.new(self.month, self.year)
-    self.week_start = week_start||self.class::DEFAULT_WEEK_START
-    
-    self.first = week_starts(self.koyomi_month.first, self.week_start)
-    self.last = week_ends(self.koyomi_month.last, self.week_start)
-    
-    Range.new(self.first, self.last)
-  end
   
   #--------------------#
   private
   
-  def week_start_as_numeric(value)
-    raise "Range overflow, required (#{WEEK_START_RANGE})." unless WEEK_START_RANGE.cover?(value)
-    value
-  end
-  
-  def week_start_as_string(value)
-    value = value.to_s.downcase[0, 3].to_sym
-    raise "Range invalid, required #{WEEK_START_STRING}." unless WEEK_START_STRING.include?(value)
-    WEEK_START_STRING.index(value)
-  end
-  
   def week_starts(date, week_start = nil)
-    week_start ||= DEFAULT_WEEK_START
+    week_start ||= self.week_start
     diff = date.wday - week_start
     sd = date - diff
     sd -= diff < 0 ? 7 : 0
@@ -76,13 +113,6 @@ class Koyomi::Calendar < Koyomi::Period
   end
   
   def week_ends(date, week_start = nil)
-    week_start ||= DEFAULT_WEEK_START
-    diff = date.wday - week_start
-    sd = date - diff
-    sd += diff < 0 ? 7 : 0
-    sd    
+    week_starts(date, week_start) + 6
   end
-  
-
-  
 end
