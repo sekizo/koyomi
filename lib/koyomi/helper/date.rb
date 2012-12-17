@@ -10,10 +10,8 @@ module Koyomi::Helper::Date
   # @param  [Object]  week_start
   # @return [Boolean]
   def week_ends?(date, week_start = nil)
-    wdays = Koyomi::Calendar::WEEK_DAYS
     week_start ||= Koyomi::Calendar::DEFAULT_WEEK_START
-    week_ends = (Koyomi::Calendar.windex(week_start) + wdays - 1) % wdays
-    date.wday == week_ends
+    (date + 1).wday == Koyomi::Calendar.windex(week_start)
   end
 end
 
