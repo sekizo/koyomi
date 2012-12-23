@@ -2,17 +2,10 @@
 
 require "koyomi/period"
 require "koyomi/month"
+require "koyomi/helper/week"
 
 class Koyomi::Calendar < Koyomi::Period
-  #--------------------#
-  # constant
-  DEFAULT_WEEK_START = :mon
-  WEEK_DAYS = 7
-  WEEK_START_RANGE = (0..6)
-  WEEK_START_STRING = [:sun, :mon, :tue, :wed, :thu, :fri, :sat]
-  
-  #--------------------#
-  # class methods
+  include Koyomi::Helper::Week
   
   # create Koyomi::Calendar instance from date.
   #
@@ -21,35 +14,6 @@ class Koyomi::Calendar < Koyomi::Period
   # @return [Koyomi::Calendar]
   def self.of(date, week_start = nil)
     self.new(date.year, date.month, week_start)
-  end
-  
-  # week index
-  #
-  # @param  [Object]  value
-  # @return [Integer]
-  def self.windex(value)
-    case value
-    when Numeric
-      index = value
-    when Date
-      index = value.wday
-    when String, Symbol
-      value = value.to_s.downcase[0, 3].to_sym
-      raise "Range invalid, required #{WEEK_START_STRING}." unless WEEK_START_STRING.include?(value)
-      index = WEEK_START_STRING.index(value)
-    else
-      index = value.to_s.to_i
-    end
-    raise "Range overflow, required (#{WEEK_START_RANGE})." unless WEEK_START_RANGE.cover?(index)
-    index
-  end
-  
-  # week label
-  #
-  # @param  [Object]  value
-  # @return [Symbol]
-  def self.wlabel(value)
-    WEEK_START_STRING.at(self.windex(value))
   end
   
   #--------------------#
@@ -82,14 +46,14 @@ class Koyomi::Calendar < Koyomi::Period
   #
   # @return [Date]
   def first
-    week_starts(self.koyomi_month.first, self.week_start)
+    Koyomi::Week.new(self.koyomi_month.first, self.week_start).first
   end
   
   # last date of the calendar (NOT last date of the MONTH)
   #
   # @return [Date]
   def last
-    week_ends(self.koyomi_month.last, self.week_start)
+    Koyomi::Week.new(self.koyomi_month.last, self.week_start).last
   end
   
   # range of the calendar.
@@ -110,27 +74,4 @@ class Koyomi::Calendar < Koyomi::Period
   protected
   
   attr_writer :year, :month, :koyomi_month
-  
-  #--------------------#
-  private
-  
-  # week start date
-  #
-  # @param  [Date]  date
-  # @param  [Object]  week_start
-  # @return [Date]
-  def week_starts(date, week_start = nil)
-    week_start ||= self.week_start
-    diff = date.wday - self.class.windex(week_start)
-    date - diff - (diff < 0 ? WEEK_DAYS : 0)
-  end
-  
-  # week end date
-  #
-  # @param  [Date]  date
-  # @param  [Object]  week_start
-  # @return [Date]
-  def week_ends(date, week_start = nil)
-    week_starts(date, week_start) + WEEK_DAYS - 1
-  end
 end

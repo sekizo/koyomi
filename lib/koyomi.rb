@@ -5,8 +5,8 @@ require "koyomi/version"
 
 require "koyomi/period"
 require "koyomi/month"
-require "koyomi/calendar"
 require "koyomi/week"
+require "koyomi/calendar"
 require "koyomi/helper"
 
 module Koyomi

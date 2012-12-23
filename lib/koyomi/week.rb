@@ -1,11 +1,10 @@
 # encoding: utf-8
 
 require "koyomi/period"
-require "koyomi/calendar"
 
 class Koyomi::Week < Koyomi::Period
   #--------------------#
-  # constant
+  # constants
   
   DEFAULT_START = :mon
   WDAYS = [:sun, :mon, :tue, :wed, :thu, :fri, :sat]
@@ -47,6 +46,26 @@ class Koyomi::Week < Koyomi::Period
     WDAYS.at(self.windex(value))
   end
   
+  # week starts?
+  #
+  # @param  [Date]  date
+  # @param  [Object]  start_wday  week start
+  # @return [Boolean]
+  def self.starts?(date, start_wday = nil)
+    start_wday ||= DEFAULT_START
+    (date).wday == self.windex(start_wday)
+  end
+  
+  # week end?
+  #
+  # @param  [Date]  date
+  # @param  [Object]  start_wday  week start
+  # @return [Boolean]
+  def self.ends?(date, start_wday = nil)
+    start_wday ||= DEFAULT_START
+    (date + 1).wday == self.windex(start_wday)
+  end
+  
   #--------------------#
   # instance methods
   
@@ -68,6 +87,20 @@ class Koyomi::Week < Koyomi::Period
     diff = self.class.windex(wday_name) - self.class.windex(self.start_wday)
     factor = diff + ((diff < 0) ? DAYS : 0)
     self.range.first + factor
+  end
+  
+  # start date
+  #
+  # @return [Date]  date
+  def starts
+    self.range.first
+  end
+  
+  # end date
+  #
+  # @return [Date]  date
+  def ends
+    self.range.last
   end
   
   #--------------------#
@@ -96,17 +129,11 @@ class Koyomi::Week < Koyomi::Period
   private
   
   def method_missing(name, *args, &block)
-    if WDAYS.include?(name.to_s.to_sym)
+    case
+    when WDAYS.include?(name.to_s.to_sym)
       self.wday(name,*args, &block)
     else
       super
     end
   end
-end
-
-module Koyomi
-  DEFAULT_WEEK_START = Koyomi::Week::DEFAULT_START
-  WEEK_WDAYS = Koyomi::Week::WDAYS
-  WEEK_DAYS = Koyomi::Week::DAYS
-  WEEK_START_RANGE = Koyomi::Week::START_RANGE
 end
