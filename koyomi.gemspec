@@ -11,6 +11,7 @@ Gem::Specification.new do |gem|
   gem.description   = %q{Extends Date class to handling with calendar.}
   gem.summary       = %q{Add some classes to handle year, month, period.}
   gem.homepage      = ""
+  gem.license       = 'MIT'
 
   gem.files         = `git ls-files`.split($/)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }

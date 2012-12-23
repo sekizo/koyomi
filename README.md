@@ -1,6 +1,6 @@
 # Koyomi
 
-TODO: Write a gem description
+Extends Date class to handling with calendar.
 
 ## Installation
 
@@ -18,7 +18,20 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+Handling calendar by this gem.
+
+	require "koyomi"
+	cal = Koyomi::Calendar.new(2012, 12, :mon)
+	cal.first.to_s # => "2012-11-26"
+	
+	month = cal.the_month
+	month.first.to_s # => "2012-12-01"
+	
+	week = Koyomi::Week.new(month.first, :tue)
+	week.first.to_s # => "2012-11-27"
+	
+	cal.first.week_end? # => false
+	cal.first.week_end?(:tue) # => true
 
 ## Contributing
 
