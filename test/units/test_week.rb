@@ -30,11 +30,16 @@ class TestKoyomiWeek < Test::Unit::TestCase
     
     should "start specified week day" do
       date = Date.new(2012, 12, 23)
-      
       Koyomi::Week::WDAYS.each do |wday|
         assert_equal(Koyomi::Week.windex(wday), Koyomi::Week.new(date, wday).range.first.wday)
       end
-      
+    end
+    
+    should "respond date to request of week day" do
+      date = Date.new(2012, 12, 23)
+      Koyomi::Week::WDAYS.each do |wday|
+        assert_equal(Koyomi::Week.windex(wday), Koyomi::Week.new(date, wday).__send__(wday).wday)
+      end
     end
     
   end # context "Koyomi::Week"

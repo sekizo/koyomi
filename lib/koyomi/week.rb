@@ -60,22 +60,47 @@ class Koyomi::Week < Koyomi::Period
     self.start_wday = start_wday||DEFAULT_START
   end
   
+  # sepified week day
+  #
+  # @param  [Object]  wday_name
+  # @return [Date]
+  def wday(wday_name)
+    diff = self.class.windex(wday_name) - self.class.windex(self.start_wday)
+    factor = diff + ((diff < 0) ? DAYS : 0)
+    self.range.first + factor
+  end
+  
   #--------------------#
   protected
   
   attr_accessor :date
   attr_reader :start_wday
   
+  # set week starts
+  #
+  # @param  [Object]  value
   def start_wday=(value)
     @start_wday = value
     self.setup_range
     @start_wday
   end
   
+  # setup week range with given week start
   def setup_range
     diff = self.date.wday - self.class.windex(self.start_wday)
     starts = self.date - (diff + ((diff < 0) ? DAYS : 0))
     @range = Range.new(starts, starts + DAYS - 1)
+  end
+  
+  #--------------------#
+  private
+  
+  def method_missing(name, *args, &block)
+    if WDAYS.include?(name.to_s.to_sym)
+      self.wday(name,*args, &block)
+    else
+      super
+    end
   end
 end
 
