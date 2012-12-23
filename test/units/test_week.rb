@@ -13,7 +13,7 @@ class TestKoyomiWeek < Test::Unit::TestCase
     
     should "generate week instance" do
       assert_nothing_raised(Exception) do
-        @week = Koyomi::Week.new(@today, Koyomi::DEFAULT_WEEK_START)
+        @week = Koyomi::Week.new(@today, Koyomi::Week::DEFAULT_START)
       end
     end # should "generate week instance"
     

@@ -6,7 +6,7 @@ class TestKoyomiDate < Test::Unit::TestCase
   context "Koyomi::Date" do
     setup do
       @date = Date.new(2012, 12, 16)
-      @wdays = Koyomi::Calendar::WEEK_START_STRING
+      @wdays = Date::WEEK_WDAYS
     end # setup
     
     should "correct week end" do
