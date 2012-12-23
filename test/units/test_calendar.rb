@@ -1,5 +1,7 @@
 # encoding: utf-8
 
+require "test_helper"
+
 class TestKoyomiCalendar < Test::Unit::TestCase
   context "Koyomi::Calendar" do
     setup do

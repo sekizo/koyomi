@@ -1,5 +1,7 @@
 # encoding: utf-8
 
+require "test_helper"
+
 class TestKoyomiMonth < Test::Unit::TestCase
   context "Koyomi::Month" do
     
