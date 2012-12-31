@@ -44,6 +44,32 @@ class Koyomi::Month < Koyomi::Period
     self.class.of(self.first - 1)
   end
   
+  # week days of nth weeks.
+  #
+  # @param  [Integer|Array<Integer>] nth
+  # @param  [Object|Array<Object>]  wday_name
+  # @return [Array<Date>]
+  def cycles(weeks, wdays)
+    _dates = []
+    cycle_weeks_filter(weeks).each do |n|
+      [wdays].flatten.each do |w|
+        a_date = self.nth_wday(n, w)
+        _dates << a_date if a_date.month == self.month
+      end
+    end
+    _dates.sort
+  end
+  
+  # week day of nth week.
+  #
+  # @param  [Integer] nth
+  # @param  [Object]  wday_name
+  # @return [Date]
+  def nth_wday(nth, wday_name)
+    a_date = Date.new(self.year, self.month, 1) + ((nth - 1) * Koyomi::Week::DAYS)
+    Koyomi::Week.new(a_date, a_date.wday).wday(wday_name)
+  end
+  
   #--------------------#
   protected
   
@@ -66,6 +92,20 @@ class Koyomi::Month < Koyomi::Period
   #--------------------#
   private
   
+  # filter cycle weeks
+  #
+  # @param  [Object]  weeks
+  # @return [Array|Range]
+  def cycle_weeks_filter(weeks)
+    case
+    when weeks.to_s =~ /every/
+      _weeks = (1..max_week)
+    else
+      _weeks = [weeks].flatten
+    end
+    _weeks
+  end
+  
   # a date next month of the date
   #
   # @param  [Date]  date
@@ -81,5 +121,14 @@ class Koyomi::Month < Koyomi::Period
   def first_date_next_month(date)
     a_date = a_date_next_month(date)
     Date.new(a_date.year, a_date.month, 1)
+  end
+  
+  # maximumn of weeks
+  #
+  # @return [Integer]
+  def max_week
+    _weeks = (self.last.day / Koyomi::Week::DAYS).to_i
+    _fraction = (self.last.day % Koyomi::Week::DAYS)
+    (_weeks + (_fraction == 0 ? 0 : 1))
   end
 end

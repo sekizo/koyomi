@@ -70,6 +70,53 @@ class Koyomi::Calendar < Koyomi::Period
     self.koyomi_month
   end
   
+  # weeks of the calendar.
+  #
+  # @return [Array<Week>]
+  def weeks
+    a_date = self.first
+    the_last = self.last
+    weeks = []
+    
+    while (a_date < the_last)
+      weeks << Koyomi::Week.new(a_date, self.week_start)
+      a_date += WEEK_DAYS
+    end
+    weeks
+  end
+  
+  # week day of nth week.
+  #
+  # @param  [Integer] nth
+  # @param  [Object]  wday_name
+  # @return [Date]
+  def nth_wday(nth, wday_name)
+    self.koyomi_month.nth_wday(nth, wday_name)
+  end
+  
+  # week days
+  #
+  # @param  [Object]  wday_name
+  # @return [Array<Date>]
+  def wdays(wday_name)
+    _wdays = []
+    a_date = self.nth_wday(1, wday_name)
+    while ((a_date.month == self.month))
+      _wdays << a_date
+      a_date += WEEK_DAYS
+    end
+    _wdays
+  end
+  
+  # cycle dates
+  #
+  # @param  [Array<Integer>|Integer]  weeks
+  # @param  [Array<Object>|Object]  wdays
+  # @return [Array<Date>]
+  def cycles(weeks, wdays)
+    self.koyomi_month.cycles(weeks, wdays)
+  end
+  
   #--------------------#
   protected
   
