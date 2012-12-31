@@ -26,6 +26,12 @@ class TestKoyomiMonth < Test::Unit::TestCase
       assert_equal(Date.new(2012, 12, 1), month.nth_wday(1, :sat))
     end
     
+    should "respond to wdays" do
+      month = Koyomi::Month.new(12, 2012)
+      assert_equal(5, @month.wdays(:sat).size)
+      assert_equal(4, @month.wdays(:fri).size)
+    end # should "respond to wdays"
+    
     should "respond to cycles" do
       month = Koyomi::Month.new(12, 2012)
       

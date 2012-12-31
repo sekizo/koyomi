@@ -81,7 +81,7 @@ class Koyomi::Month < Koyomi::Period
     
     while (a_date.month == self.month)
       _dates << a_date
-      a_date += WEEK_DAYS
+      a_date += Koyomi::Week::DAYS
     end
     _dates.sort
   end

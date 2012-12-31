@@ -90,22 +90,46 @@ class TestKoyomiCalendar < Test::Unit::TestCase
       end # should "have weeks"
     
       should "respond to nth_wday" do
-        assert_equal(Date.new(2012, 12, 1), @cal.nth_wday(1, :sat))
+        assert_equal(Date.new(2012,12,1), @cal.nth_wday(1, :sat))
+        
+        # version 0.0.5 or later
+        assert_equal(Date.new(2012,11,27), @cal.nth_wday(1, :tue))
       end # should "respond to nth_wday"
       
       should "respond to wdays" do
-        assert_equal(5, @cal.wdays(:sat).size)
-        assert_equal(4, @cal.wdays(:fri).size)
+        # version 0.0.4.x
+        #assert_equal(5, @cal.wdays(:sat).size)
+        #assert_equal(4, @cal.wdays(:fri).size)
+        
+        # version 0.0.5 or later
+        assert_equal(6, @cal.wdays(:sat).size)
+        assert_equal(6, @cal.wdays(:fri).size)
       end # should "respond to wdays"
       
       should "respond to cycles" do
         dates = @cal.cycles([1, 3], [:tue, :fri])
-        
         assert_equal(4, dates.size)
         
         dates.each do |date|
           assert((date.wday_name == :tue) || (date.wday_name == :fri))
         end
+        
+        # version 0.0.5 or later
+        dates = @cal.cycles(:every, [:tue, :fri])
+        assert_equal(12, dates.size)
+        
+        dates.each do |date|
+          assert((date.wday_name == :tue) || (date.wday_name == :fri))
+        end
+        
+        @cal.week_start = :tue
+        dates = @cal.cycles(:every, [:tue, :fri])
+        assert_equal(10, dates.size)
+        
+        dates.each do |date|
+          assert((date.wday_name == :tue) || (date.wday_name == :fri))
+        end
+        
       end # should "respond to cycles"
       
     end # context "week day methods"

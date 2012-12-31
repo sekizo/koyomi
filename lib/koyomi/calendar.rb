@@ -18,9 +18,10 @@ class Koyomi::Calendar < Koyomi::Period
   
   #--------------------#
   # instance methods
-  attr_reader :year, :month, :koyomi_month
   attr_accessor :week_start
-  
+  attr_reader :year, :month, :koyomi_month
+  attr_reader :weeks
+    
   # initialize instance
   #
   # @param  [Integer] year optional, use instance create date.
@@ -30,16 +31,16 @@ class Koyomi::Calendar < Koyomi::Period
     super()
     self.year = year||self.created_at.year
     self.month = month||self.created_at.month
-    self.week_start = week_start||DEFAULT_WEEK_START
-    
     self.koyomi_month = Koyomi::Month.new(self.month, self.year)
+    self.week_start = week_start||DEFAULT_WEEK_START
   end
   
   # set week_start
   #
   # @param  [Object]  value
   def week_start=(value)
-    @week_start = self.class.windex(value)
+    self.setup_week_start(value)
+    @week_start
   end
   
   # first date of the calendar (NOT first date of the MONTH)
@@ -70,28 +71,13 @@ class Koyomi::Calendar < Koyomi::Period
     self.koyomi_month
   end
   
-  # weeks of the calendar.
-  #
-  # @return [Array<Week>]
-  def weeks
-    a_date = self.first
-    the_last = self.last
-    weeks = []
-    
-    while (a_date < the_last)
-      weeks << Koyomi::Week.new(a_date, self.week_start)
-      a_date += WEEK_DAYS
-    end
-    weeks
-  end
-  
   # week day of nth week.
   #
   # @param  [Integer] nth
   # @param  [Object]  wday_name
   # @return [Date]
   def nth_wday(nth, wday_name)
-    self.koyomi_month.nth_wday(nth, wday_name)
+    self.weeks[nth - 1].wday(wday_name)
   end
   
   # week days
@@ -99,13 +85,7 @@ class Koyomi::Calendar < Koyomi::Period
   # @param  [Object]  wday_name
   # @return [Array<Date>]
   def wdays(wday_name)
-    _wdays = []
-    a_date = self.nth_wday(1, wday_name)
-    while ((a_date.month == self.month))
-      _wdays << a_date
-      a_date += WEEK_DAYS
-    end
-    _wdays
+    self.weeks.collect { |w| w.wday(wday_name) }
   end
   
   # cycle dates
@@ -114,11 +94,56 @@ class Koyomi::Calendar < Koyomi::Period
   # @param  [Array<Object>|Object]  wdays
   # @return [Array<Date>]
   def cycles(weeks, wdays)
-    self.koyomi_month.cycles(weeks, wdays)
+    _dates = []
+    cycle_weeks_filter(weeks).each do |n|
+      [wdays].flatten.each do |w|
+        _dates << self.nth_wday(n, w)
+      end
+    end
+    _dates.sort
   end
   
   #--------------------#
   protected
   
   attr_writer :year, :month, :koyomi_month
+  
+  # setup week start
+  #
+  # @param  [Object]  value
+  def setup_week_start(value)
+    @week_start = self.class.windex(value)
+    self.setup_weeks(@week_start)
+  end
+  
+  # setup weeks of the calendar.
+  #
+  # @return [Array<Week>]
+  def setup_weeks(week_start)
+    a_date = self.first
+    the_last = self.last
+    @weeks = []
+    
+    while (a_date < the_last)
+      @weeks << Koyomi::Week.new(a_date, week_start)
+      a_date += WEEK_DAYS
+    end
+    @weeks
+  end
+  
+  #--------------------#
+  private
+  
+  # cycle weeks filter
+  #
+  # @param  [Object]  weeks
+  # @return [Iterator]  Array or Range
+  def cycle_weeks_filter(weeks)
+    case
+    when weeks.to_s =~ /every/
+      (1..self.weeks.size)
+    else
+      [weeks].flatten
+    end
+  end
 end
