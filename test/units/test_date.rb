@@ -9,7 +9,7 @@ class TestKoyomiDate < Test::Unit::TestCase
       @wdays = Date::WEEK_WDAYS
     end # setup
     
-    should "correct week end" do
+    should "correct week start, end" do
       cal = Koyomi::Calendar.of(@date)
       
       cal.each do |date|
@@ -19,9 +19,24 @@ class TestKoyomiDate < Test::Unit::TestCase
           else
             assert(!date.week_end?(wd))
           end
+          
+          if (date).wday == @wdays.index(wd)
+            assert(date.week_start?(wd))
+          else
+            assert(!date.week_start?(wd))
+          end
         end # each wd
       end # each date
     end # should "correct week end"
+    
+    should "respond to nth_wday" do
+      assert_equal(3, @date.nth_month_week)
+    end # should "respond to nth_wday"
+    
+    should "respond to info" do
+      assert_equal(3, @date.month_info[:nth])
+      assert_equal(:sun, @date.month_info[:wday])
+    end
     
   end # context "Koyomi::Date"
 end

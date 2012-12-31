@@ -40,5 +40,14 @@ module Koyomi::Helper::Week
     def week_ends?(date, week_start = nil)
       Koyomi::Week.ends?(date, week_start)
     end
+    
+    # week start?
+    #
+    # @param  [Date]  date
+    # @param  [Object]  week_start  week start
+    # @return [Boolean]
+    def week_starts?(date, week_start = nil)
+      Koyomi::Week.starts?(date, week_start)
+    end
   end
 end
