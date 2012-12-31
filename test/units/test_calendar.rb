@@ -11,7 +11,7 @@ class TestKoyomiCalendar < Test::Unit::TestCase
     should "have koyomi month" do
       assert(@calendar.koyomi_month.is_a?(Koyomi::Month))
       assert(@calendar.the_month.is_a?(Koyomi::Month))
-    end
+    end # should "have koyomi month"
     
     should "have week start" do
       assert(@calendar.week_start.is_a?(Numeric))
@@ -25,7 +25,7 @@ class TestKoyomiCalendar < Test::Unit::TestCase
       assert_raise(RuntimeError) do
         @calendar.week_start = 7
       end
-    end
+    end # should "have week start"
     
     context "handle correct week" do
       setup do
@@ -75,6 +75,40 @@ class TestKoyomiCalendar < Test::Unit::TestCase
       end
       
     end # context "handle correct week"
-     
+    
+    context "week methods" do
+      
+      setup do
+        @cal = Koyomi::Calendar.new(2012, 12, :mon)
+      end
+      
+      should "have weeks" do
+        assert_equal(6, @cal.weeks.size)
+        
+        cal = Koyomi::Calendar.new(2012, 12, :tue)
+        assert_equal(5, cal.weeks.size)
+      end # should "have weeks"
+    
+      should "respond to nth_wday" do
+        assert_equal(Date.new(2012, 12, 1), @cal.nth_wday(1, :sat))
+      end # should "respond to nth_wday"
+      
+      should "respond to wdays" do
+        assert_equal(5, @cal.wdays(:sat).size)
+        assert_equal(4, @cal.wdays(:fri).size)
+      end # should "respond to wdays"
+      
+      should "respond to cycles" do
+        dates = @cal.cycles([1, 3], [:tue, :fri])
+        
+        assert_equal(4, dates.size)
+        
+        dates.each do |date|
+          assert((date.wday_name == :tue) || (date.wday_name == :fri))
+        end
+      end # should "respond to cycles"
+      
+    end # context "week day methods"
+    
   end # context "Koyomi::Calendar"
 end
