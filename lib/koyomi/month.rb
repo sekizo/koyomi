@@ -70,6 +70,22 @@ class Koyomi::Month < Koyomi::Period
     Koyomi::Week.new(a_date, a_date.wday).wday(wday_name)
   end
   
+  
+  # week days
+  #
+  # @param  [Object]  wday_name
+  # @return [Array<Date>]
+  def wdays(wday_name)
+    _dates = []
+    a_date = self.nth_wday(1, wday_name)
+    
+    while (a_date.month == self.month)
+      _dates << a_date
+      a_date += WEEK_DAYS
+    end
+    _dates.sort
+  end
+  
   #--------------------#
   protected
   
