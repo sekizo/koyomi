@@ -104,7 +104,59 @@ describe Koyomi::Calendar do
 
     context "6th sunday" do
       subject { calendar.nth_wday(6, :mon) }
-      xit { expect { subject }.to raise_error(RuntimeError) }
+
+      # [TODO] define Koyomi::Calendar::WrongRangeError
+      xit "raise Koyomi::Calendar::WrongRangeError" do
+        expect { subject }.to raise_error(NoMethodError)
+      end
+    end
+  end
+
+  describe "#wdays" do
+    Koyomi::Week::WDAYS.each do |wday|
+      describe "size" do
+        subject { calendar.wdays(wday).size }
+
+        context "has 5 weeks" do
+          let(:calendar) { described_class.new(2015, 11, :sun) }
+          it { is_expected.to eq 5 }
+        end
+
+        context "has 6 weeks" do
+          let(:calendar) { described_class.new(2015, 11, :mon) }
+          it { is_expected.to eq 6 }
+        end
+      end # describe "size"
+    end
+  end
+
+  describe "#cycles" do
+    subject { calendar.cycles(*test_case) }
+
+    context "first and third tuesday and friday" do
+      let(:test_case) { [[1, 3], [:tue, :fri]] }
+      it { expect(subject.size).to eq 4 }
+
+      it "days has requested week day" do
+        subject.each do |date|
+          expect([:tue, :fri]).to include(date.wday_name)
+        end
+      end
+    end # context "first and third tuesday and friday"
+
+    context "every monday and friday" do
+      let(:test_case) { [:every, [:mon, :fri]] }
+      let(:calendar) { described_class.new(2015, 12, :mon) }
+      # 2015-11 ~ 2016-01 start with monday
+      #
+      # 30  1  2  3  4  5  6
+      #  7  8  9 10 11 12 13
+      # 14 15 16 17 18 19 20
+      # 21 22 23 24 25 26 27
+      # 28 29 30 31  2  3  4
+
+      it { expect(subject.size).to eq 10 }
+      it { expect(subject.first.month).not_to eq calendar.month}
     end
   end
 end
