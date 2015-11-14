@@ -21,6 +21,7 @@ Gem::Specification.new do |gem|
   #--------------------#
   # additionals
   gem.add_development_dependency "rspec"
+  gem.add_development_dependency "rspec-its"
   gem.add_development_dependency "guard-rspec"
 
 end

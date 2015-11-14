@@ -1,5 +1,4 @@
-require "spec_helper"
-require "koyomi"
+require "koyomi_helper"
 
 describe Koyomi::Calendar do
   let(:calendar) { described_class.new() }
@@ -105,8 +104,8 @@ describe Koyomi::Calendar do
     context "6th sunday" do
       subject { calendar.nth_wday(6, :mon) }
 
-      # [TODO] define Koyomi::Calendar::WrongRangeError
-      xit "raise Koyomi::Calendar::WrongRangeError" do
+      # [TODO] define Koyomi::WrongRangeError
+      xit "raise Koyomi::WrongRangeError" do
         expect { subject }.to raise_error(NoMethodError)
       end
     end
