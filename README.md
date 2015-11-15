@@ -25,18 +25,18 @@ Handling calendar by this gem.
 	require "koyomi"
 	cal = Koyomi::Calendar.new(2012, 12, :mon)
 	cal.first.to_s # => "2012-11-26"
-	
+
 	cal.first.week_end? # => false
 	cal.first.week_end?(:tue) # => true
-	
+
 	month = cal.the_month
 	month.first.to_s # => "2012-12-01"
-	
+
 	week = Koyomi::Week.new(month.first, :tue)
 	week.first.to_s # => "2012-11-27"
-	
+
 	# weeks and week days.
-	
+
 	# nth week day.
 	#
 	# Version 0.0.5 or later, NOT compatible version 0.0.4.x.
@@ -45,14 +45,14 @@ Handling calendar by this gem.
 	# (japanese)
 	# バージョン 0.0.5 以上では、バージョン 0.0.4.x と互換性がありません。
 	# 以前のバージョンと同様の結果を得るためには、 Koyomi::Month#nth_wday メソッドを利用して下さい。
-	# 
+	#
 	cal.nth_wday(1, :sat).to_s
 	# => "2012-12-01"
 	cal.nth_wday(1, :tue).to_s
 	# => "2012-11-27"
 	cal.the_month.nth_wday(1, :tue).to_s
 	# => "2012-12-04"
-	
+
 	# cycle: every monday.
 	# (japanese) 周期：毎週月曜
 	cal.cycles(:every, :mon).collect { |d| d.to_s }
@@ -64,18 +64,18 @@ Handling calendar by this gem.
 	# (japanese)
 	# バージョン 0.0.5 以上では、バージョン 0.0.4.x と互換性がありません。
 	# 以前のバージョンと同様の結果を得るためには、 Koyomi::Month#cycles メソッドを利用して下さい。
-	# 
+	#
 	cal.the_month.cycles(:every, :mon).collect { |d| d.to_s }
 	# => ["2012-12-03", "2012-12-10", "2012-12-17", "2012-12-24", "2012-12-31"]
-	
+
 	# cycle: 1st, 3rd week's tuesday or friday.
 	# (japanese) 周期：第１、第３の火曜と金曜
-	# 
+	#
 	cal.cycles([1, 3], [:tue, :fri]).collect { |d| d.to_s }
 	# => ["2012-11-27", "2012-11-30", "2012-12-11", "2012-12-14"]
 	cal.the_month.cycles([1, 3], [:tue, :fri]).collect { |d| d.to_s }
 	# => ["2012-12-04", "2012-12-07", "2012-12-18", "2012-12-21"]
-	
+
 
 ## Contributing
 

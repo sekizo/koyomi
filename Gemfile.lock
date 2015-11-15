@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    koyomi (0.0.5)
+    koyomi (0.1.0)
 
 GEM
   remote: https://rubygems.org/
