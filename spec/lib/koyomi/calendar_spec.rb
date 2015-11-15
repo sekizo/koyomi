@@ -110,11 +110,10 @@ describe Koyomi::Calendar do
       it { is_expected.to eq Date.new(2015, 12, 1) }
     end
 
-    context "6th sunday" do
+    context "range over" do
       subject { calendar.nth_wday(6, :mon) }
 
-      # [TODO] define Koyomi::WrongRangeError
-      xit "raise Koyomi::WrongRangeError" do
+      xit "[TODO] raise Koyomi::WrongRangeError" do
         expect { subject }.to raise_error(NoMethodError)
       end
     end
