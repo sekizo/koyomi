@@ -3,6 +3,15 @@ require "koyomi_helper"
 describe Koyomi::Calendar do
   let(:calendar) { described_class.new() }
 
+  describe ".of" do
+    subject { described_class.of(date) }
+    let(:date) { today }
+    let!(:today) { Date.today }
+
+    it { is_expected.to be_kind_of(described_class) }
+    its(:month) { is_expected.to eq date.month }
+  end
+
   describe "#koyomi_month" do
     subject { calendar.koyomi_month }
 
