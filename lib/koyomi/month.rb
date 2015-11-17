@@ -3,10 +3,10 @@
 require "koyomi/period"
 
 class Koyomi::Month < Koyomi::Period
-  
+
   #--------------------#
   # class methods
-  
+
   # create instance from date
   #
   # @param  [Date]  date
@@ -14,36 +14,36 @@ class Koyomi::Month < Koyomi::Period
   def self.of(date)
     self.new(date.month, date.year)
   end
-  
+
   #--------------------#
   # instance methods
-  
+
   attr_reader :year, :month
   attr_reader :first, :last
-  
+
   # initialize instance.
   #
   # @param  [Integer] month optional, default use the month of instance created.
   # @param  [Integer] year  optional, default use the year of instance created.
   def initialize(month = nil, year = nil)
     super()
-    self.range = self.initialize_range(month, year) 
+    self.range = self.initialize_range(month, year)
   end
-  
+
   # next month
   #
   # @return [Koyomi::Month]
   def next
     self.class.of(self.last + 1)
   end
-  
+
   # previous month
   #
   # @return [Koyomi::Month]
   def prev
     self.class.of(self.first - 1)
   end
-  
+
   # week days of nth weeks.
   #
   # @param  [Integer|Array<Integer>] nth
@@ -53,13 +53,18 @@ class Koyomi::Month < Koyomi::Period
     _dates = []
     cycle_weeks_filter(weeks).each do |n|
       [wdays].flatten.each do |w|
-        a_date = self.nth_wday(n, w)
-        _dates << a_date if a_date.month == self.month
+        begin
+          a_date = self.nth_wday(n, w)
+        rescue Koyomi::WrongRangeError => e
+          next
+        else
+          _dates << a_date
+        end
       end
     end
     _dates.sort
   end
-  
+
   # week day of nth week.
   #
   # @param  [Integer] nth
@@ -67,10 +72,11 @@ class Koyomi::Month < Koyomi::Period
   # @return [Date]
   def nth_wday(nth, wday_name)
     a_date = Date.new(self.year, self.month, 1) + ((nth - 1) * Koyomi::Week::DAYS)
-    Koyomi::Week.new(a_date, a_date.wday).wday(wday_name)
+    date = Koyomi::Week.new(a_date, a_date.wday).wday(wday_name)
+    raise Koyomi::WrongRangeError if date.month != self.month
+    date
   end
-  
-  
+
   # week days
   #
   # @param  [Object]  wday_name
@@ -78,20 +84,20 @@ class Koyomi::Month < Koyomi::Period
   def wdays(wday_name)
     _dates = []
     a_date = self.nth_wday(1, wday_name)
-    
+
     while (a_date.month == self.month)
       _dates << a_date
       a_date += Koyomi::Week::DAYS
     end
     _dates.sort
   end
-  
+
   #--------------------#
   protected
-  
+
   attr_writer :year, :month
   attr_writer :first, :last
-  
+
   # initialize range
   #
   # @param  [Integer] month optional, default use the month of instance created.
@@ -104,10 +110,10 @@ class Koyomi::Month < Koyomi::Period
     self.last = (first_date_next_month(self.first) - 1)
     Range.new(self.first, self.last)
   end
-  
+
   #--------------------#
   private
-  
+
   # filter cycle weeks
   #
   # @param  [Object]  weeks
@@ -121,7 +127,7 @@ class Koyomi::Month < Koyomi::Period
     end
     _weeks
   end
-  
+
   # a date next month of the date
   #
   # @param  [Date]  date
@@ -129,7 +135,7 @@ class Koyomi::Month < Koyomi::Period
   def a_date_next_month(date)
     Date.new(date.year, date.month, 1) + 32
   end
-  
+
   # first date of next month
   #
   # @param  [Date]  date
@@ -138,7 +144,7 @@ class Koyomi::Month < Koyomi::Period
     a_date = a_date_next_month(date)
     Date.new(a_date.year, a_date.month, 1)
   end
-  
+
   # maximumn of weeks
   #
   # @return [Integer]

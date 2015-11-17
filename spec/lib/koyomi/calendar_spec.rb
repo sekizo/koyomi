@@ -113,9 +113,7 @@ describe Koyomi::Calendar do
     context "range over" do
       subject { calendar.nth_wday(6, :mon) }
 
-      xit "[TODO] raise Koyomi::WrongRangeError" do
-        expect { subject }.to raise_error(NoMethodError)
-      end
+      it { expect { subject }.to raise_error(Koyomi::WrongRangeError) }
     end
   end
 

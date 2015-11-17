@@ -52,9 +52,7 @@ describe Koyomi::Month do
 
     context "5th friday" do
       let(:test_case) { [5, :fri] }
-      xit("[TODO] raise Koyomi::WrongRangeError") {
-        is_expected.to raise_error(Koyomi::WrongRangeError)
-      }
+      it { expect { subject }.to raise_error(Koyomi::WrongRangeError) }
     end
   end
 

@@ -8,6 +8,7 @@ require "koyomi/month"
 require "koyomi/week"
 require "koyomi/calendar"
 require "koyomi/helper"
+require "koyomi/error"
 
 module Koyomi
 end
