@@ -54,7 +54,7 @@ class Koyomi::Month < Koyomi::Period
     cycle_weeks_filter(weeks).each do |n|
       [wdays].flatten.each do |w|
         begin
-          a_date = self.nth_wday(n, w)
+          a_date = self.nth_wday!(n, w)
         rescue Koyomi::WrongRangeError => e
           next
         else
@@ -71,8 +71,23 @@ class Koyomi::Month < Koyomi::Period
   # @param  [Object]  wday_name
   # @return [Date]
   def nth_wday(nth, wday_name)
-    a_date = Date.new(self.year, self.month, 1) + ((nth - 1) * Koyomi::Week::DAYS)
-    date = Koyomi::Week.new(a_date, a_date.wday).wday(wday_name)
+    case "#{nth}"
+    when /first/
+      calc_nth_wday(1, wday_name)
+    when /last/
+      self.next.nth_wday(1, wday_name) - Koyomi::Week::DAYS
+    else
+      calc_nth_wday(nth, wday_name)
+    end
+  end
+
+  # week day of nth week.
+  #
+  # @param  [Integer] nth
+  # @param  [Object]  wday_name
+  # @return [Date]
+  def nth_wday!(nth, wday_name)
+    date = nth_wday(nth, wday_name)
     raise Koyomi::WrongRangeError if date.month != self.month
     date
   end
@@ -152,5 +167,10 @@ class Koyomi::Month < Koyomi::Period
     _weeks = (self.last.day / Koyomi::Week::DAYS).to_i
     _fraction = (self.last.day % Koyomi::Week::DAYS)
     (_weeks + (_fraction == 0 ? 0 : 1))
+  end
+
+  def calc_nth_wday(nth, wday_name)
+    a_date = Date.new(self.year, self.month, 1) + ((nth - 1) * Koyomi::Week::DAYS)
+    Koyomi::Week.new(a_date, a_date.wday).wday(wday_name)
   end
 end
