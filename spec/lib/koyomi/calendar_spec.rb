@@ -56,8 +56,8 @@ describe Koyomi::Calendar do
 
     describe "size" do
       subject { calendar.weeks.size }
-      let(:calendar) { described_class.new(*test_case) }
-      let(:test_case) { nil }
+      let(:calendar) { described_class.new(*given) }
+      let(:given) { nil }
 
       context "has 5 weeks" do
         # 2015-11 ~ 2015-12 start with sunday
@@ -69,7 +69,7 @@ describe Koyomi::Calendar do
         # 29 30  1  2  3  4  5
         #
         # #=> 5 weeks
-        let(:test_case) { [2015, 11, :sun] }
+        let(:given) { [2015, 11, :sun] }
         it { is_expected.to eq 5 }
       end # context "has 5 weeks"
 
@@ -84,7 +84,7 @@ describe Koyomi::Calendar do
         # 30  1  2  3  4  5  6
         #
         # #=> 6 weeks
-        let(:test_case) { [2015, 11, :mon] }
+        let(:given) { [2015, 11, :mon] }
         it { is_expected.to eq 6 }
       end # context "has 6 weeks"
     end # describe size
@@ -136,10 +136,10 @@ describe Koyomi::Calendar do
   end
 
   describe "#cycles" do
-    subject { calendar.cycles(*test_case) }
+    subject { calendar.cycles(*given) }
 
     context "first and third tuesday and friday" do
-      let(:test_case) { [[1, 3], [:tue, :fri]] }
+      let(:given) { [[1, 3], [:tue, :fri]] }
       it { expect(subject.size).to eq 4 }
 
       it "days has requested week day" do
@@ -150,7 +150,7 @@ describe Koyomi::Calendar do
     end # context "first and third tuesday and friday"
 
     context "every monday and friday" do
-      let(:test_case) { [:every, [:mon, :fri]] }
+      let(:given) { [:every, [:mon, :fri]] }
       let(:calendar) { described_class.new(2015, 12, :mon) }
       # 2015-11 ~ 2016-01 start with monday
       #
