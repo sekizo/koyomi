@@ -40,9 +40,14 @@ describe Koyomi::Month do
     # 21 22 23 24 25 26 27
     # 28 29 30 31
 
-    context "first saturday" do
+    context "1st saturday" do
       let(:test_case) { [1, :sat] }
       it { is_expected.to eq Date.new(2015, 12, 5) }
+    end
+
+    context "first friday" do
+      let(:test_case) { [:first, :fri] }
+      xit { is_expected.to eq Date.new(2015, 12, 4) }
     end
 
     context "last saturday" do
