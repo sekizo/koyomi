@@ -121,4 +121,22 @@ describe Koyomi::Month do
       its(:last)  { is_expected.to eq Date.new(2015, 12, 31) }
     end
   end
+
+  describe "#first" do
+    subject { month.first }
+
+    context "given 2015-12" do
+      let(:month) { described_class.new(12, 2015) }
+      it { expect(subject.day).to eq 1 }
+    end
+  end
+
+  describe "#last" do
+    subject { month.last }
+
+    context "given 2015-12" do
+      let(:month) { described_class.new(12, 2015) }
+      it { expect(subject.day).to eq 31 }
+    end
+  end
 end
