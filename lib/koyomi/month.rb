@@ -27,7 +27,11 @@ class Koyomi::Month < Koyomi::Period
   # @param  [Integer] year  optional, default use the year of instance created.
   def initialize(month = nil, year = nil)
     super()
-    self.range = self.initialize_range(month, year)
+    @year   = year||self.created_at.year
+    @month  = month||self.created_at.month
+    @first  = Date.new(self.year, self.month, 1)
+    @last   = (first_date_of_next_month - 1)
+    @range  = Range.new(self.first, self.last)
   end
 
   # next month
@@ -108,25 +112,6 @@ class Koyomi::Month < Koyomi::Period
   end
 
   #--------------------#
-  protected
-
-  attr_writer :year, :month
-  attr_writer :first, :last
-
-  # initialize range
-  #
-  # @param  [Integer] month optional, default use the month of instance created.
-  # @param  [Integer] year  optional, default use the year of instance created.
-  # @return [Range]
-  def initialize_range(month = nil, year = nil)
-    self.year = year||self.created_at.year
-    self.month = month||self.created_at.month
-    self.first = Date.new(self.year, self.month, 1)
-    self.last = (first_date_next_month(self.first) - 1)
-    Range.new(self.first, self.last)
-  end
-
-  #--------------------#
   private
 
   # filter cycle weeks
@@ -147,16 +132,16 @@ class Koyomi::Month < Koyomi::Period
   #
   # @param  [Date]  date
   # @return [Date]
-  def a_date_next_month(date)
-    Date.new(date.year, date.month, 1) + 32
+  def a_date_of_next_month
+    self.first + 32
   end
 
   # first date of next month
   #
   # @param  [Date]  date
   # @return [Date]
-  def first_date_next_month(date)
-    a_date = a_date_next_month(date)
+  def first_date_of_next_month
+    a_date = a_date_of_next_month
     Date.new(a_date.year, a_date.month, 1)
   end
 
@@ -170,7 +155,7 @@ class Koyomi::Month < Koyomi::Period
   end
 
   def calc_nth_wday(nth, wday_name)
-    a_date = Date.new(self.year, self.month, 1) + ((nth - 1) * Koyomi::Week::DAYS)
+    a_date = self.first + ((nth - 1) * Koyomi::Week::DAYS)
     Koyomi::Week.new(a_date, a_date.wday).wday(wday_name)
   end
 end
