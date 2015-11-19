@@ -4,13 +4,28 @@ describe Koyomi::Year do
   let(:year) { described_class.new(*given) }
 
   describe ".of" do
+    subject { year }
     let(:year) { described_class.of(*given) }
     let!(:today) { Date.today }
 
-    context "nothing given" do
-      subject { year }
+    context "given nothing" do
       let(:given) { }
       it { expect(subject.year).to eq today.year }
+    end
+
+    context "given today" do
+      let(:given) { today }
+      it { expect(subject.year).to eq today.year }
+    end
+
+    context "given next year's first" do
+      let(:given) { Date.new(today.year + 1, 1, 1) }
+      it { expect(subject.year).to eq (today.year + 1)}
+    end
+
+    context "given prev year's first" do
+      let(:given) { Date.new(today.year - 1, 1, 1) }
+      it { expect(subject.year).to eq (today.year - 1)}
     end
   end
 
