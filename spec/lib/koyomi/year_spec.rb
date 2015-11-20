@@ -46,4 +46,15 @@ describe Koyomi::Year do
       it { is_expected.to eq Date.new(2015, 12, 31) }
     end
   end
+
+  describe "month mothods" do
+    (1..12).each do |month|
+      context "given month #{month}" do
+        let(:given) { month }
+        subject { year.__send__("_#{month}") }
+        it { is_expected.to be_kind_of(Koyomi::Month) }
+        it { expect(subject.month).to eq month }
+      end
+    end
+  end
 end
