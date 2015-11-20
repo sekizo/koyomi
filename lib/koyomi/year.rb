@@ -36,4 +36,19 @@ class Koyomi::Year < Koyomi::Period
       Koyomi::Month.new(m, year)
     end
   end
+
+  def month(month)
+    Koyomi::Month.new(month, year)
+  end
+
+  def uruu?
+    begin
+      Date.new(year, 2, 29)
+    rescue ArgumentError => e
+      false
+    else
+      true
+    end
+  end
+  alias_method :leap?, :uruu?
 end

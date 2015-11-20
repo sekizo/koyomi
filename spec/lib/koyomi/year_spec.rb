@@ -53,7 +53,49 @@ describe Koyomi::Year do
         let(:given) { month }
         subject { year.__send__("_#{month}") }
         it { is_expected.to be_kind_of(Koyomi::Month) }
-        it { expect(subject.month).to eq month }
+        describe "its month" do
+          it { expect(subject.month).to eq month }
+        end
+      end
+    end
+  end
+
+  describe "#month" do
+    subject { year.month(given) }
+    (1..12).each do |month|
+      context "given #{month}" do
+        let(:given) { month }
+        it { is_expected.to be_kind_of(Koyomi::Month) }
+        describe "its month" do
+          it { expect(subject.month).to eq month }
+        end
+      end
+    end
+  end
+
+  [:uruu?, :leap?].each do |method|
+    describe "##{method}" do
+      subject { year.__send__(method) }
+      let(:year) { described_class.new(given) }
+
+      context "given year 1999" do
+        let(:given) { 1999 }
+        it { is_expected.to be_falsy }
+      end
+
+      context "given year 2000" do
+        let(:given) { 2000 }
+        it { is_expected.to be_truthy }
+      end
+
+      context "given year 2004" do
+        let(:given) { 2004 }
+        it { is_expected.to be_truthy }
+      end
+
+      context "given year 2100" do
+        let(:given) { 2100 }
+        it { is_expected.to be_falsy }
       end
     end
   end
