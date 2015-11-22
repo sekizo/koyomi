@@ -163,7 +163,7 @@ describe Koyomi::Month do
         let(:day) { 29 }
         let(:expected) { Koyomi::WrongRangeError }
         it { expect { month.date(day) }.to raise_error(expected) }
-        it { expect { month.__send__("_#{day}") }.to raise_error(expected) }
+        it { expect { month._29 }.to raise_error(expected) }
       end
     end
   end
