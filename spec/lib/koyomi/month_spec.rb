@@ -139,4 +139,32 @@ describe Koyomi::Month do
       it { expect(subject.day).to eq 31 }
     end
   end
+
+  describe "#date" do
+    let(:month) { described_class.new(*given) }
+
+    context "2015-11" do
+      let(:given) { [11, 2015] }
+      it { expect(month.date(1)).to eq Date.new(2015, 11, 1) }
+      it { expect(month._1).to eq Date.new(2015, 11, 1) }
+    end
+
+    context "2015-02" do
+      let(:given) { [2, 2015] }
+
+      context "day 28" do
+        let(:day) { 28 }
+        let(:expected) { Date.new(2015, 2, day) }
+        it { expect(month.date(day)).to eq expected }
+        it { expect(month._28).to eq expected }
+      end
+
+      context "day 29" do
+        let(:day) { 29 }
+        let(:expected) { Koyomi::WrongRangeError }
+        it { expect { month.date(day) }.to raise_error(expected) }
+        it { expect { month.__send__("_#{day}") }.to raise_error(expected) }
+      end
+    end
+  end
 end

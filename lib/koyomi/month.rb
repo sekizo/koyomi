@@ -111,6 +111,18 @@ class Koyomi::Month < Koyomi::Period
     _dates.sort
   end
 
+  def date(day)
+    begin
+      date!(day)
+    rescue ArgumentError => e
+      raise Koyomi::WrongRangeError
+    end
+  end
+
+  def date!(day)
+    Date.new(self.year, self.month, "#{day}".to_i)
+  end
+
   #--------------------#
   private
 
@@ -157,5 +169,9 @@ class Koyomi::Month < Koyomi::Period
   def calc_nth_wday(nth, wday_name)
     a_date = self.first + ((nth - 1) * Koyomi::Week::DAYS)
     Koyomi::Week.new(a_date, a_date.wday).wday(wday_name)
+  end
+
+  def method_missing(name, *args, &block)
+    date("#{name}".sub(/^_/, "")) if "#{name}".match(/^_[0-9]+$/)
   end
 end
