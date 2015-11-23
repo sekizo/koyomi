@@ -235,4 +235,9 @@ describe Koyomi::Month do
       end
     end
   end
+
+  describe "#cycle" do
+    subject { month.cycle }
+    it { is_expected.to be_kind_of(Koyomi::MonthCycle) }
+  end
 end

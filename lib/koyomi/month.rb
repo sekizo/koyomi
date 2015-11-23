@@ -56,6 +56,13 @@ class Koyomi::Month < Koyomi::Period
     Koyomi::Calendar.new(year, month, week_start)
   end
 
+  # Create Koyomi::MonthCycle
+  #
+  # @return [Koyomi::Cycle]
+  def cycle
+    Koyomi::MonthCycle.new(self)
+  end
+
   # week days of nth weeks.
   #
   # @param  [Integer|Array<Integer>] nth
@@ -119,6 +126,10 @@ class Koyomi::Month < Koyomi::Period
     _dates.sort
   end
 
+  # date
+  #
+  # @param [Integer] days
+  # @return [Date]
   def date(day)
     begin
       date!(day)
@@ -127,6 +138,11 @@ class Koyomi::Month < Koyomi::Period
     end
   end
 
+  # date
+  #   don't catch exceptions
+  #
+  # @param [Integer] days
+  # @return [Date]
   def date!(day)
     Date.new(self.year, self.month, "#{day}".to_i)
   end
