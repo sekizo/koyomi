@@ -56,7 +56,7 @@ describe Koyomi::MonthCycle do
       end
 
       context "add sequencial" do
-        subject { month_cycle.add(Date.new(2015, 11, 1), [[1, 3], :fri]) }
+        subject { month_cycle.add(Date.new(2015, 11, 1)).add([[1, 3], :fri]) }
         it { expect { subject }.not_to raise_error }
         it { expect(subject.dates.size).to eq 3 }
       end
