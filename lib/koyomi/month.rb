@@ -48,6 +48,10 @@ class Koyomi::Month < Koyomi::Period
     self.class.of(self.first - 1)
   end
 
+  def calendar(week_start = nil)
+    Koyomi::Calendar.new(year, month, week_start)
+  end
+
   # week days of nth weeks.
   #
   # @param  [Integer|Array<Integer>] nth

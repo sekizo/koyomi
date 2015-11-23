@@ -167,4 +167,73 @@ describe Koyomi::Month do
       end
     end
   end
+
+  describe "#calendar" do
+    subject { month.calendar(week_start) }
+    let(:month) { described_class.new(*given) }
+
+    context "week start not given" do
+      let(:week_start) { }
+      context "2015-11" do
+        # 2015-11 month
+        #                    1
+        #  2  3  4  5  6  7  8
+        #  9 10 11 12 13 14 15
+        # 16 17 18 19 20 21 22
+        # 23 24 25 26 27 28 29
+        # 30
+        #
+        # expected calendar
+        # 2015-10 ~ 2015-12
+        # 26 27 28 29 30 31  1
+        #  2  3  4  5  6  7  8
+        #  9 10 11 12 13 14 15
+        # 16 17 18 19 20 21 22
+        # 23 24 25 26 27 28 29
+        # 30  1  2  3  4  5  6
+        #
+        let(:given) { [11, 2015] }
+        it { is_expected.to be_kind_of Koyomi::Calendar }
+        describe "its attributes" do
+          let(:expected_wday) { Koyomi::Week::WDAYS.index(Koyomi::Week::DEFAULT_START) }
+          it { expect(subject.year).to  eq 2015 }
+          it { expect(subject.month).to eq 11 }
+          it { expect(subject.week_start).to eq expected_wday }
+          it { expect(subject.first).to eq Date.new(2015, 10, 26) }
+          it { expect(subject.last).to  eq Date.new(2015, 12, 6) }
+        end
+      end
+    end
+
+    context "week start sunday" do
+      let(:week_start) { :sun }
+      context "2015-11" do
+        # 2015-11 month
+        #  1  2  3  4  5  6  7
+        #  8  9 10 11 12 13 14
+        # 15 16 17 18 19 20 21
+        # 22 23 24 25 26 27 28
+        # 29 30
+        #
+        # expected calendar
+        # 2015-11 ~ 2015-12
+        #  1  2  3  4  5  6  7
+        #  8  9 10 11 12 13 14
+        # 15 16 17 18 19 20 21
+        # 22 23 24 25 26 27 28
+        # 29 30  1  2  3  4  5
+        #
+        let(:given) { [11, 2015] }
+        it { is_expected.to be_kind_of Koyomi::Calendar }
+        describe "its attributes" do
+          let(:expected_wday) { Koyomi::Week::WDAYS.index(:sun) }
+          it { expect(subject.year).to  eq 2015 }
+          it { expect(subject.month).to eq 11 }
+          it { expect(subject.week_start).to eq expected_wday }
+          it { expect(subject.first).to eq Date.new(2015, 11, 1) }
+          it { expect(subject.last).to  eq Date.new(2015, 12, 5) }
+        end
+      end
+    end
+  end
 end
