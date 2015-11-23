@@ -27,12 +27,12 @@ class Koyomi::Calendar < Koyomi::Period
   # @param  [Integer] year optional, use instance create date.
   # @param  [Integer] month optional, use instance create date.
   # @param  [Object] week_start weekday which week starts with. optional, use DEFAULT_WEEK_START.
-  def initialize(year = nil, month = nil, week_start = nil)
+  def initialize(year = nil, month = nil, week_start = Koyomi::Week::DEFAULT_START)
     super()
     self.year = year||self.created_at.year
     self.month = month||self.created_at.month
     self.koyomi_month = Koyomi::Month.new(self.month, self.year)
-    self.week_start = week_start||DEFAULT_WEEK_START
+    self.week_start = week_start
   end
 
   # set week_start

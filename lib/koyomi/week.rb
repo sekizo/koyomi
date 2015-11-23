@@ -5,18 +5,18 @@ require "koyomi/period"
 class Koyomi::Week < Koyomi::Period
   #--------------------#
   # constants
-  
+
   DEFAULT_START = :mon
   WDAYS = [:sun, :mon, :tue, :wed, :thu, :fri, :sat]
   DAYS = WDAYS.size
   START_RANGE = (0..(DAYS - 1))
-  
+
   #--------------------#
   # attributes
-  
+
   #--------------------#
   # class methods
-  
+
   # week index
   #
   # @param  [Object]  value
@@ -37,7 +37,7 @@ class Koyomi::Week < Koyomi::Period
     raise "Range overflow, required (#{START_RANGE})." unless START_RANGE.cover?(index)
     index
   end
-  
+
   # week day name
   #
   # @param  [Object]  value
@@ -45,40 +45,38 @@ class Koyomi::Week < Koyomi::Period
   def self.wday_name(value)
     WDAYS.at(self.windex(value))
   end
-  
+
   # week starts?
   #
   # @param  [Date]  date
   # @param  [Object]  start_wday  week start
   # @return [Boolean]
-  def self.starts?(date, start_wday = nil)
-    start_wday ||= DEFAULT_START
+  def self.starts?(date, start_wday = DEFAULT_START)
     (date).wday == self.windex(start_wday)
   end
-  
+
   # week end?
   #
   # @param  [Date]  date
   # @param  [Object]  start_wday  week start
   # @return [Boolean]
-  def self.ends?(date, start_wday = nil)
-    start_wday ||= DEFAULT_START
+  def self.ends?(date, start_wday = DEFAULT_START)
     (date + 1).wday == self.windex(start_wday)
   end
-  
+
   #--------------------#
   # instance methods
-  
+
   # initialize method
   #
   # @param  [Date]  date optional, default use Date.today.
   # @param  [Object]  start_wday  optionail, default use Koyomi::Week::DEFAULT_START
-  def initialize(date = nil, start_wday = nil)
+  def initialize(date = nil, start_wday = DEFAULT_START)
     super()
     self.date = date||self.created_at
-    self.start_wday = start_wday||DEFAULT_START
+    self.start_wday = start_wday
   end
-  
+
   # sepified week day
   #
   # @param  [Object]  wday_name
@@ -88,27 +86,27 @@ class Koyomi::Week < Koyomi::Period
     factor = diff + ((diff < 0) ? DAYS : 0)
     self.range.first + factor
   end
-  
+
   # start date
   #
   # @return [Date]  date
   def starts
     self.range.first
   end
-  
+
   # end date
   #
   # @return [Date]  date
   def ends
     self.range.last
   end
-  
+
   #--------------------#
   protected
-  
+
   attr_accessor :date
   attr_reader :start_wday
-  
+
   # set week starts
   #
   # @param  [Object]  value
@@ -117,17 +115,17 @@ class Koyomi::Week < Koyomi::Period
     self.setup_range
     @start_wday
   end
-  
+
   # setup week range with given week start
   def setup_range
     diff = self.date.wday - self.class.windex(self.start_wday)
     starts = self.date - (diff + ((diff < 0) ? DAYS : 0))
     @range = Range.new(starts, starts + DAYS - 1)
   end
-  
+
   #--------------------#
   private
-  
+
   def method_missing(name, *args, &block)
     case
     when WDAYS.include?(name.to_s.to_sym)

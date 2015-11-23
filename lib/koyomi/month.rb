@@ -48,7 +48,11 @@ class Koyomi::Month < Koyomi::Period
     self.class.of(self.first - 1)
   end
 
-  def calendar(week_start = nil)
+  # Create Koyomi::Calendar
+  #
+  # @param  [Object]  week_start
+  # @return [Koyomi::Calendar]
+  def calendar(week_start = Koyomi::Week::DEFAULT_START)
     Koyomi::Calendar.new(year, month, week_start)
   end
 
