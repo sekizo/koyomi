@@ -169,11 +169,9 @@ describe Koyomi::Month do
   end
 
   describe "#calendar" do
-    subject { month.calendar(week_start) }
     let(:month) { described_class.new(*given) }
-
     context "week start not given" do
-      let(:week_start) { }
+      subject { month.calendar() }
       context "2015-11" do
         # 2015-11 month
         #                    1
@@ -194,18 +192,19 @@ describe Koyomi::Month do
         #
         let(:given) { [11, 2015] }
         it { is_expected.to be_kind_of Koyomi::Calendar }
-        describe "its attributes" do
-          let(:expected_wday) { Koyomi::Week::WDAYS.index(Koyomi::Week::DEFAULT_START) }
-          it { expect(subject.year).to  eq 2015 }
-          it { expect(subject.month).to eq 11 }
-          it { expect(subject.week_start).to eq expected_wday }
-          it { expect(subject.first).to eq Date.new(2015, 10, 26) }
-          it { expect(subject.last).to  eq Date.new(2015, 12, 6) }
+        describe "calendar attributes" do
+          let(:expected_wday) { Koyomi::Week.windex(Koyomi::Week::DEFAULT_START) }
+          its("#year") { expect(subject.year).to  eq 2015 }
+          its("#month") { expect(subject.month).to eq 11 }
+          its("#week_start") { expect(subject.week_start).to eq expected_wday }
+          its("#first") { expect(subject.first).to eq Date.new(2015, 10, 26) }
+          its("#last") { expect(subject.last).to  eq Date.new(2015, 12, 6) }
         end
       end
     end
 
     context "week start sunday" do
+      subject { month.calendar(week_start) }
       let(:week_start) { :sun }
       context "2015-11" do
         # 2015-11 month
@@ -225,13 +224,13 @@ describe Koyomi::Month do
         #
         let(:given) { [11, 2015] }
         it { is_expected.to be_kind_of Koyomi::Calendar }
-        describe "its attributes" do
-          let(:expected_wday) { Koyomi::Week::WDAYS.index(:sun) }
-          it { expect(subject.year).to  eq 2015 }
-          it { expect(subject.month).to eq 11 }
-          it { expect(subject.week_start).to eq expected_wday }
-          it { expect(subject.first).to eq Date.new(2015, 11, 1) }
-          it { expect(subject.last).to  eq Date.new(2015, 12, 5) }
+        describe "calendar attributes" do
+          let(:expected_wday) { Koyomi::Week::WDAYS.index(week_start) }
+          its("#year") { expect(subject.year).to  eq 2015 }
+          its("#month") { expect(subject.month).to eq 11 }
+          its("#week_start") { expect(subject.week_start).to eq expected_wday }
+          its("#first") { expect(subject.first).to eq Date.new(2015, 11, 1) }
+          its("#last") { expect(subject.last).to  eq Date.new(2015, 12, 5) }
         end
       end
     end
