@@ -18,17 +18,13 @@ class Koyomi::Year < Koyomi::Period
   # instance methods
 
   attr_reader :year
-  attr_reader :first, :last
 
   # initialize instance.
   #
   # @param  [Integer] year  optional, default use the year of instance created.
   def initialize(year = nil)
-    super()
-    @year   = year||created_at.year
-    @first  = Date.new(@year,  1,  1)
-    @last   = Date.new(@year, 12, 31)
-    @range  = (@first .. @last)
+    @year   = year||Date.today
+    super(Date.new(@year,  1,  1), Date.new(@year, 12, 31))
   end
 
   (1..12).each do |m|

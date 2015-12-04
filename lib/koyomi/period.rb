@@ -3,25 +3,29 @@
 require "date"
 
 class Koyomi::Period
-  attr_reader :range
-  
+  attr_reader :first, :last
+
   #--------------------#
   # instance methods
-  
-  def initialize
+
+  def initialize(first, last)
     super()
-    self.created_at = Date.today
+    @first = first
+    @last = last
+    @created_at ||= Date.today
   end
-  
-  #--------------------#
-  protected
-  
-  attr_accessor :created_at
-  attr_writer :range
-  
+
+  def range
+    (first .. last)
+  end
+
   #--------------------#
   private
-  
+
+  def created_at
+    @created_at ||= Date.today
+  end
+
   # throw uniplemeted method to self range.
   def method_missing(name, *args, &block)
     begin

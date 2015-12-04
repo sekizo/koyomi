@@ -15,23 +15,38 @@ class Koyomi::Month < Koyomi::Period
     self.new(date.month, date.year)
   end
 
+  # a date next month of the date
+  #
+  # @param  [Date]  date
+  # @return [Date]
+  def self.a_date_of_next_month(date)
+    date + 32
+  end
+
+  # first date of next month
+  #
+  # @param  [Date]  date
+  # @return [Date]
+  def self.first_date_of_next_month(date)
+    a_date = self.a_date_of_next_month(date)
+    Date.new(a_date.year, a_date.month, 1)
+  end
+
   #--------------------#
   # instance methods
 
   attr_reader :year, :month
-  attr_reader :first, :last
 
   # initialize instance.
   #
   # @param  [Integer] month optional, default use the month of instance created.
   # @param  [Integer] year  optional, default use the year of instance created.
   def initialize(month = nil, year = nil)
-    super()
-    @year   = year||self.created_at.year
-    @month  = month||self.created_at.month
-    @first  = Date.new(self.year, self.month, 1)
-    @last   = (first_date_of_next_month - 1)
-    @range  = Range.new(self.first, self.last)
+    @year   = year||created_at.year
+    @month  = month||created_at.month
+    _first  = Date.new(@year, @month, 1)
+    _last   = (self.class.first_date_of_next_month(_first) - 1)
+    super(_first, _last)
   end
 
   # next month
@@ -162,23 +177,6 @@ class Koyomi::Month < Koyomi::Period
       _weeks = [weeks].flatten
     end
     _weeks
-  end
-
-  # a date next month of the date
-  #
-  # @param  [Date]  date
-  # @return [Date]
-  def a_date_of_next_month
-    self.first + 32
-  end
-
-  # first date of next month
-  #
-  # @param  [Date]  date
-  # @return [Date]
-  def first_date_of_next_month
-    a_date = a_date_of_next_month
-    Date.new(a_date.year, a_date.month, 1)
   end
 
   # maximumn of weeks

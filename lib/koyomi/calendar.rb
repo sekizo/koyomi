@@ -18,7 +18,7 @@ class Koyomi::Calendar < Koyomi::Period
 
   #--------------------#
   # instance methods
-  attr_accessor :week_start
+  attr_reader :week_start
   attr_reader :year, :month, :koyomi_month
   attr_reader :weeks
 
@@ -28,19 +28,14 @@ class Koyomi::Calendar < Koyomi::Period
   # @param  [Integer] month optional, use instance create date.
   # @param  [Object] week_start weekday which week starts with. optional, use DEFAULT_WEEK_START.
   def initialize(year = nil, month = nil, week_start = Koyomi::Week::DEFAULT_START)
-    super()
-    self.year = year||self.created_at.year
-    self.month = month||self.created_at.month
-    self.koyomi_month = Koyomi::Month.new(self.month, self.year)
-    self.week_start = week_start
-  end
-
-  # set week_start
-  #
-  # @param  [Object]  value
-  def week_start=(value)
-    self.setup_week_start(value)
-    @week_start
+    _today = Date.today
+    @year = year||_today.year
+    @month = month||_today.month
+    @koyomi_month = Koyomi::Month.new(@month, @year)
+    
+    _week = Koyomi::Week.new(@koyomi_month.first, @week_start)
+    super(_week.first, _week.last)
+    setup_week_start(week_start)
   end
 
   # first date of the calendar (NOT first date of the MONTH)
@@ -57,11 +52,12 @@ class Koyomi::Calendar < Koyomi::Period
     Koyomi::Week.new(self.koyomi_month.last, self.week_start).last
   end
 
-  # range of the calendar.
+  # set week_start
   #
-  # @return [Range]
-  def range
-    Range.new(self.first, self.last)
+  # @param  [Object]  value
+  def week_start=(value)
+    setup_week_start(value)
+    @week_start
   end
 
   # Koyomi::Month of the calendar's month.
@@ -109,12 +105,15 @@ class Koyomi::Calendar < Koyomi::Period
 
   attr_writer :year, :month, :koyomi_month
 
+  #--------------------#
+  private
+
   # setup week start
   #
   # @param  [Object]  value
   def setup_week_start(value)
     @week_start = self.class.windex(value)
-    self.setup_weeks(@week_start)
+    setup_weeks(@week_start)
   end
 
   # setup weeks of the calendar.
@@ -131,9 +130,6 @@ class Koyomi::Calendar < Koyomi::Period
     end
     @weeks
   end
-
-  #--------------------#
-  private
 
   # cycle weeks filter
   #
