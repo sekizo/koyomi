@@ -8,11 +8,11 @@ class Koyomi::Period
   #--------------------#
   # instance methods
 
-  def initialize(first, last)
+  def initialize(first = nil, last = nil)
     super()
-    @first = first
-    @last = last
-    @created_at ||= Date.today
+    @created_at = Date.today
+    @first = first||@created_at
+    @last = last||@created_at
   end
 
   def range
@@ -22,9 +22,7 @@ class Koyomi::Period
   #--------------------#
   private
 
-  def created_at
-    @created_at ||= Date.today
-  end
+  attr_reader :created_at
 
   # throw uniplemeted method to self range.
   def method_missing(name, *args, &block)

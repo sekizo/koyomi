@@ -8,12 +8,18 @@ describe Koyomi::Period do
 
     context "no arguments given" do
       let(:initialize_with) { nil }
-      it { expect { subject }.to raise_error(ArgumentError) }
+      it { expect { subject }.not_to raise_error }
+
+      describe "#range" do
+        subject{ period.range }
+        its("count") { is_expected.to eq 1 }
+        its("first") { is_expected.to be_kind_of Date}
+      end
     end
 
     context "first and last given" do
       let(:initialize_with) { [Date.new(2015, 12, 1), Date.new(2015, 12, 31)] }
-      it { expect { subject }.not_to raise_exception }
+      it { expect { subject }.not_to raise_error }
     end
   end
 

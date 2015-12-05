@@ -72,10 +72,9 @@ class Koyomi::Week < Koyomi::Period
   # @param  [Date]  date optional, default use Date.today.
   # @param  [Object]  start_wday  optionail, default use Koyomi::Week::DEFAULT_START
   def initialize(date = nil, start_wday = DEFAULT_START)
-    @date = date||Date.today
+    super()
     @start_wday = start_wday
-    _range = setup_range(date, start_wday)
-    super(_range.first, _range.last)
+    setup_range(date||created_at)
   end
 
   # sepified week day
@@ -85,37 +84,25 @@ class Koyomi::Week < Koyomi::Period
   def wday(wday_name)
     diff = self.class.windex(wday_name) - self.class.windex(self.start_wday)
     factor = diff + ((diff < 0) ? DAYS : 0)
-    self.range.first + factor
+    first + factor
   end
 
-  # start date
-  #
-  # @return [Date]  date
-  def starts
-    self.range.first
-  end
-
-  # end date
-  #
-  # @return [Date]  date
-  def ends
-    self.range.last
-  end
+  alias_method :starts, :first
+  alias_method :ends,   :last
 
   #--------------------#
   protected
 
-  attr_reader :date
   attr_reader :start_wday
 
   #--------------------#
   private
-  
+
   # setup week range with given week start
-  def setup_range(date, start_wday)
+  def setup_range(date)
     diff = date.wday - self.class.windex(start_wday)
-    starts = date - (diff + ((diff < 0) ? DAYS : 0))
-    Range.new(starts, starts + DAYS - 1)
+    @first  = date - (diff + ((diff < 0) ? DAYS : 0))
+    @last   = @first + DAYS - 1
   end
 
   def method_missing(name, *args, &block)

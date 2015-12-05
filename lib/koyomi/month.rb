@@ -42,11 +42,11 @@ class Koyomi::Month < Koyomi::Period
   # @param  [Integer] month optional, default use the month of instance created.
   # @param  [Integer] year  optional, default use the year of instance created.
   def initialize(month = nil, year = nil)
+    super()
     @year   = year||created_at.year
     @month  = month||created_at.month
-    _first  = Date.new(@year, @month, 1)
-    _last   = (self.class.first_date_of_next_month(_first) - 1)
-    super(_first, _last)
+    @first  = Date.new(@year, @month, 1)
+    @last   = (self.class.first_date_of_next_month(@first) - 1)
   end
 
   # next month
