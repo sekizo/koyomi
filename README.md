@@ -63,7 +63,7 @@ month.first.class
 month.first.to_s
 # => "2015-12-01"
 
-## sarching dates
+## searching dates
 cal.nth_wday(1, :mon)
 # => #<Date: 2015-11-30 ((2457357j,0s,0n),+0s,2299161j)>
 month.nth_wday(1, :mon)
