@@ -20,3 +20,4 @@ tmp
 vendor/bundle
 log
 log/*.log
+Gemfile.lock
