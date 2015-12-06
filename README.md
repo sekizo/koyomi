@@ -18,64 +18,60 @@ Or install it yourself as:
 
 ## Usage
 
-Handling calendar by this gem.
+``` ruby
+require "koyomi"
 
-(japanese) カレンダーを取り扱うための gem です。
+## Koyomi::Calendar
+cal = Koyomi::Calendar.new(2015, 12, :mon)
+# The calendar starts monday.
+# 30  1  2  3  4  5  6
+#  7  8  9 10 11 12 13
+# 14 15 16 17 18 19 20
+# 21 22 23 24 25 26 27
+# 28 29 30 31  1  2  3
 
-	require "koyomi"
-	cal = Koyomi::Calendar.new(2012, 12, :mon)
-	cal.first.to_s # => "2012-11-26"
+cal.first.class
+# => Date
 
-	cal.first.week_end? # => false
-	cal.first.week_end?(:tue) # => true
+cal.first.week_end?
+# => false
 
-	month = cal.the_month
-	month.first.to_s # => "2012-12-01"
+cal.first.week_end?(:tue)
+# => true
 
-	week = Koyomi::Week.new(month.first, :tue)
-	week.first.to_s # => "2012-11-27"
+cal.first.to_s
+# => "2015-11-30"
 
-	# weeks and week days.
+cal.range.first.to_s
+# => "2015-11-30"
 
-	# nth week day.
-	#
-	# Version 0.0.5 or later, NOT compatible version 0.0.4.x.
-	# To get version 0.0.4 compatible result, use Koyomi::Month#nth_wday.
-	#
-	# (japanese)
-	# バージョン 0.0.5 以上では、バージョン 0.0.4.x と互換性がありません。
-	# 以前のバージョンと同様の結果を得るためには、 Koyomi::Month#nth_wday メソッドを利用して下さい。
-	#
-	cal.nth_wday(1, :sat).to_s
-	# => "2012-12-01"
-	cal.nth_wday(1, :tue).to_s
-	# => "2012-11-27"
-	cal.the_month.nth_wday(1, :tue).to_s
-	# => "2012-12-04"
+cal.range.last.to_s
+# => "2016-01-03"
 
-	# cycle: every monday.
-	# (japanese) 周期：毎週月曜
-	cal.cycles(:every, :mon).collect { |d| d.to_s }
-	# => ["2012-11-26", "2012-12-03", "2012-12-10", "2012-12-17", "2012-12-24", "2012-12-31"]
-	#
-	# Version 0.0.5 or later, NOT compatible version 0.0.4.x.
-	# To get version 0.0.4 compatible result, use Koyomi::Month#cycles.
-	#
-	# (japanese)
-	# バージョン 0.0.5 以上では、バージョン 0.0.4.x と互換性がありません。
-	# 以前のバージョンと同様の結果を得るためには、 Koyomi::Month#cycles メソッドを利用して下さい。
-	#
-	cal.the_month.cycles(:every, :mon).collect { |d| d.to_s }
-	# => ["2012-12-03", "2012-12-10", "2012-12-17", "2012-12-24", "2012-12-31"]
+## Koyomi::Month
+month = cal.the_month
+# The month
+#     1  2  3  4  5  6
+#  7  8  9 10 11 12 13
+# 14 15 16 17 18 19 20
+# 21 22 23 24 25 26 27
+# 28 29 30 31
 
-	# cycle: 1st, 3rd week's tuesday or friday.
-	# (japanese) 周期：第１、第３の火曜と金曜
-	#
-	cal.cycles([1, 3], [:tue, :fri]).collect { |d| d.to_s }
-	# => ["2012-11-27", "2012-11-30", "2012-12-11", "2012-12-14"]
-	cal.the_month.cycles([1, 3], [:tue, :fri]).collect { |d| d.to_s }
-	# => ["2012-12-04", "2012-12-07", "2012-12-18", "2012-12-21"]
+month.first.class
+# => Date
 
+month.first.to_s
+# => "2015-12-01"
+
+## sarching dates
+cal.nth_wday(1, :mon)
+# => #<Date: 2015-11-30 ((2457357j,0s,0n),+0s,2299161j)>
+month.nth_wday(1, :mon)
+# => #<Date: 2015-12-07 ((2457364j,0s,0n),+0s,2299161j)>
+
+```
+
+Some examples in [Wiki](wiki/examples).
 
 ## Contributing
 
