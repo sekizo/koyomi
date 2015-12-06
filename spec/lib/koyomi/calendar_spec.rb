@@ -12,6 +12,13 @@ describe Koyomi::Calendar do
     its(:month) { is_expected.to eq date.month }
   end
 
+  context "initialized with 2015-12-01, week start monday." do
+    subject { described_class.new(*given) }
+    let(:given) { [2015, 12, :mon] }
+    its(:first) { is_expected.to eq Date.new(2015, 11, 30) }
+    its(:last)  { is_expected.to eq Date.new(2016,  1,  3) }
+  end
+
   describe "#koyomi_month" do
     subject { calendar.koyomi_month }
 

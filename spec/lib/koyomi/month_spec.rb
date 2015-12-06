@@ -1,8 +1,9 @@
 require "koyomi_helper"
 
 describe Koyomi::Month do
-  let(:month) { described_class.new(today.month, today.year) }
+  let(:month) { described_class.new(date.month, date.year) }
   let!(:today) { Date.today }
+  let(:date) { today }
 
   describe "#range" do
     subject { month.range }
