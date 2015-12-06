@@ -71,8 +71,6 @@ month.nth_wday(1, :mon)
 
 ```
 
-Some examples in [Wiki](wiki/examples).
-
 ## Contributing
 
 1. Fork it
